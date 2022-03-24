@@ -1,108 +1,107 @@
 import pygame
 
 
-def Load_BackGround(screen, Player_1, Player_2):
+def loadbackground(screen, player_1, player_2):
     screen.blit(pygame.image.load('background.jpg'), (0, 0))
 
     for i in range(80):
-        screen.blit(pygame.image.load('grass_block_side.png'), (16*i+320, 700))
+        screen.blit(pygame.image.load('grass_block_side.png'), (16 * i + 320, 700))
         screen.blit(pygame.image.load('dirt.png'), (16 * i + 320, 716))
 
-    screen.blit(Player_1.img, (Player_1.x, Player_1.y))
-    screen.blit(Player_2.img, (Player_2.x, Player_2.y))
+    screen.blit(player_1.img, (player_1.x, player_1.y))
+    screen.blit(player_2.img, (player_2.x, player_2.y))
 
     pygame.display.flip()
 
 
-def keyPressedEvents(keyPressedEvents, Player):
+def keypressedevents(keypressed, player):
+    if keypressed[player.b[0]]:
+        player.h_v -= 1
+        player.img = player.imgs[1]
 
-    if keyPressedEvents[Player.b[0]]:
-        Player.h_v -= 1
-        Player.img = Player.imgs[1]
+    if keypressed[player.b[1]]:
+        player.h_v += 1
+        player.img = player.imgs[0]
 
-    if keyPressedEvents[Player.b[1]]:
-        Player.h_v += 1
-        Player.img = Player.imgs[0]
+    if keypressed[player.b[0]] == 0 and keypressed[player.b[1]] == 0 and player.h_v != 0:
+        player.h_v = reducetozero(player.h_v)
 
-    if keyPressedEvents[Player.b[0]] == 0 and keyPressedEvents[Player.b[1]] == 0 and Player.h_v != 0:
-        Player.h_v = ReduceToZero(Player.h_v)
+    player.h_v = maxmin(player.h_v, -15, 15)
 
-    Player.h_v = MaxMin(Player.h_v, -15, 15)
+    if keypressed[player.b[2]] and player.canjump == True:
+        player.jump = True
+        player.canjump = False
 
-    if keyPressedEvents[Player.b[2]] and Player.canjump == True:
-        Player.jump = True
-        Player.canjump = False
+    if keypressed[player.b[3]] and player.e == True and player.a_s == False and player.a_q == False:
+        player.a_e = True
+        player.e = False
+        player.v_v = 0
 
-    if keyPressedEvents[Player.b[3]] and Player.e == True and Player.a_s == False and Player.a_q == False:
-        Player.a_e = True
-        Player.e = False
-        Player.v_v = 0
+    if keypressed[pygame.K_t]:
+        player.x, player.y = 700, 400
 
-    if keyPressedEvents[pygame.K_t]:
-        Player.x, Player.y = 700, 400
-
-    if keyPressedEvents[Player.b[4]] and Player.s == True and Player.a_e == False and Player.a_q == False:
-        Player.s_charge += 1
-        if Player.s_charge == 15:
-            Player.s_charge = 0
-            Player.a_s = True
-            Player.s = False
+    if keypressed[player.b[4]] and player.s == True and player.a_e == False and player.a_q == False:
+        player.s_charge += 1
+        if player.s_charge == 15:
+            player.s_charge = 0
+            player.a_s = True
+            player.s = False
     else:
-        Player.q_charge = 0
+        player.q_charge = 0
 
-    if Player.a_s == True:
-        if Player.img == Player.imgs[1] and Player.s_d == 0:
-            Player.s_d = -1
-        if Player.img == Player.imgs[0] and Player.s_d == 0:
-            Player.s_d = 1
+    if player.a_s:
+        if player.img == player.imgs[1] and player.s_d == 0:
+            player.s_d = -1
+        if player.img == player.imgs[0] and player.s_d == 0:
+            player.s_d = 1
 
-        if Player.a_h_v == 0:
-            Player.a_h_v = 61*Player.s_d
-        elif Player.a_h_v == Player.s_d:
-            Player.a_h_v = 0
-            Player.a_s = False
-            Player.s_d = 0
+        if player.a_h_v == 0:
+            player.a_h_v = 61 * player.s_d
+        elif player.a_h_v == player.s_d:
+            player.a_h_v = 0
+            player.a_s = False
+            player.s_d = 0
         else:
-            Player.a_h_v -= 5*Player.s_d
+            player.a_h_v -= 5 * player.s_d
 
     else:
-        if Player.s == False:
-            Player.s_c += 1
-        if Player.s_c == 20:
-            Player.s_c = 0
-            Player.s = True
+        if not player.s:
+            player.s_c += 1
+        if player.s_c == 20:
+            player.s_c = 0
+            player.s = True
 
-    if keyPressedEvents[Player.b[5]] and Player.q == True and Player.a_e == False and Player.a_s == False:
-        Player.a_q = True
-        Player.q = False
-        Player.v_v = 0
+    if keypressed[player.b[5]] and player.q == True and player.a_e == False and player.a_s == False:
+        player.a_q = True
+        player.q = False
+        player.v_v = 0
 
-    if Player.a_q == True:
-        if Player.a_v_v == 0:
-            Player.a_v_v = -16
-        elif Player.a_v_v == -1:
-            Player.a_v_v = 1
-        elif 16 > Player.a_v_v > 0:
-            Player.a_v_v = Player.a_v_v*2
-        elif Player.a_v_v == 16:
-            if Player.y == 700-Player.h and 320-Player.w <= Player.x <= 1600:
-                Player.a_v_v = 0
-                Player.a_q = False
+    if player.a_q:
+        if player.a_v_v == 0:
+            player.a_v_v = -16
+        elif player.a_v_v == -1:
+            player.a_v_v = 1
+        elif 16 > player.a_v_v > 0:
+            player.a_v_v = player.a_v_v * 2
+        elif player.a_v_v == 16:
+            if player.y == 700 - player.h and 320 - player.w <= player.x <= 1600:
+                player.a_v_v = 0
+                player.a_q = False
         else:
-            Player.a_v_v = Player.a_v_v/2
-        if Player.a_v_v != 0:
-            if Player.img == Player.imgs[0]:
-                Player.a_h_v = 16
+            player.a_v_v = player.a_v_v / 2
+        if player.a_v_v != 0:
+            if player.img == player.imgs[0]:
+                player.a_h_v = 16
             else:
-                Player.a_h_v = -16
+                player.a_h_v = -16
         else:
-            Player.a_h_v = 0
-            Player.q = True
+            player.a_h_v = 0
+            player.q = True
 
-    Player.x = Player.x + Player.h_v + Player.a_h_v
+    player.x = player.x + player.h_v + player.a_h_v
 
 
-def MaxMin(n, minn, maxn):
+def maxmin(n, minn, maxn):
     if n < minn:
         return minn
     elif n > maxn:
@@ -111,72 +110,72 @@ def MaxMin(n, minn, maxn):
         return n
 
 
-def ReduceToZero(n):
+def reducetozero(n):
     if n > 0:
-        return n-1
+        return n - 1
     if n < 0:
-        return n+1
+        return n + 1
 
 
-def RoundNum(numtoround, num):
-    if num-5 <= numtoround <= num+15:
+def roundnum(numtoround, num):
+    if num - 5 <= numtoround <= num + 15:
         return num
     else:
         return numtoround
 
 
-def GroundHitbox(Player):
-    if 732 > Player.y > 700-Player.h and 320-Player.w <= Player.x <= 1600:
-        if 320-Player.w < Player.x <= 320-Player.w+Player.h_v or 1600-Player.h_v <= Player.x < 1600:
-            Player.x -= Player.h_v
+def groundhitbox(player):
+    if 732 > player.y > 700 - player.h and 320 - player.w <= player.x <= 1600:
+        if 320 - player.w < player.x <= 320 - player.w + player.h_v or 1600 - player.h_v <= player.x < 1600:
+            player.x -= player.h_v
 
-        if 732 > Player.y > 700-Player.h:
-            if 320 <= Player.x+Player.h_v <= 360:
-                Player.x -= Player.h_v
+        if 732 > player.y > 700 - player.h:
+            if 320 <= player.x + player.h_v <= 360:
+                player.x -= player.h_v
 
-        Player.y = RoundNum(Player.y, 600)
-        if Player.y == RoundNum(Player.y, 600) and 320-Player.w <= Player.x <= 1600:
-            Player.v_v = 0
-        Player.y = RoundNum(Player.y, 660)
+        player.y = roundnum(player.y, 600)
+        if player.y == roundnum(player.y, 600) and 320 - player.w <= player.x <= 1600:
+            player.v_v = 0
+        player.y = roundnum(player.y, 660)
 
 
-def Gravity(Player):
-    if Player.y == 700-Player.h and 320-Player.w <= Player.x <= 1600:
-        Player.v_v = 0
-        Player.canjump = True
-    elif Player.jump == False and Player.a_e == False and Player.a_q == False:
-        Player.v_v += 1
-    MaxMin(Player.v_v, -15, 15)
+def gravity(player):
+    if player.y == 700 - player.h and 320 - player.w <= player.x <= 1600:
+        player.v_v = 0
+        player.canjump = True
+    elif player.jump == False and player.a_e == False and player.a_q == False:
+        player.v_v += 1
+    maxmin(player.v_v, -15, 15)
 
-    if Player.jump == True:
-        if Player.v_v >= 0:
-            Player.v_v = -32
-        elif Player.v_v == -1:
-            Player.v_v = 0
-            Player.jump = False
+    if player.jump:
+        if player.v_v >= 0:
+            player.v_v = -32
+        elif player.v_v == -1:
+            player.v_v = 0
+            player.jump = False
         else:
-            Player.v_v = Player.v_v/2
+            player.v_v = player.v_v / 2
 
-    if Player.a_e == True:
-        if Player.a_v_v >= 0:
-            Player.a_v_v = -64
-        elif Player.a_v_v == -1:
-            Player.a_v_v = 0
-            Player.a_e = False
+    if player.a_e:
+        if player.a_v_v >= 0:
+            player.a_v_v = -64
+        elif player.a_v_v == -1:
+            player.a_v_v = 0
+            player.a_e = False
         else:
-            Player.a_v_v = Player.a_v_v/2
+            player.a_v_v = player.a_v_v / 2
 
-    if Player.e == False:
-        Player.e_c += 1
-        if Player.e_c == 30:
-            Player.e = True
-            Player.e_c = 0
+    if not player.e:
+        player.e_c += 1
+        if player.e_c == 30:
+            player.e = True
+            player.e_c = 0
 
-    Player.v_v = MaxMin(Player.v_v, -100, 15)
-    Player.y = Player.y + Player.v_v + Player.a_v_v
+    player.v_v = maxmin(player.v_v, -100, 15)
+    player.y = player.y + player.v_v + player.a_v_v
 
 
 def cleanpictures(imgs):
-    WHITE = (255, 255, 255)
+    white = (255, 255, 255)
     for i in range(len(imgs)):
-        imgs[i].set_colorkey(WHITE)
+        imgs[i].set_colorkey(white)

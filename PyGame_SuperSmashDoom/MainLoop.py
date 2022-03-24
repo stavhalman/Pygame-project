@@ -2,7 +2,7 @@ import pygame
 import Classes
 import Commands
 
-WINDOW_WIDTH = 920
+WINDOW_WIDTH = 1920
 WINDOW_HEIGHT = 1040
 pygame.init()
 size = (WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -27,14 +27,14 @@ while not finish:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finish = True
-    Commands.Load_BackGround(screen, Player1, Player2)
+    Commands.loadbackground(screen, Player1, Player2)
     keyPressedEvents = pygame.key.get_pressed()
-    Commands.keyPressedEvents(keyPressedEvents, Player1)
-    Commands.keyPressedEvents(keyPressedEvents, Player2)
-    Commands.Gravity(Player1)
-    Commands.Gravity(Player2)
-    Commands.GroundHitbox(Player1)
-    Commands.GroundHitbox(Player2)
+    Commands.keypressedevents(keyPressedEvents, Player1)
+    Commands.keypressedevents(keyPressedEvents, Player2)
+    Commands.gravity(Player1)
+    Commands.gravity(Player2)
+    Commands.groundhitbox(Player1)
+    Commands.groundhitbox(Player2)
     clock.tick(REFRESH_RATE)
 
 pygame.quit()

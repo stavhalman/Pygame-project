@@ -4,12 +4,11 @@ class Entity:
         self.y = yposition
         self.w = width
         self.h = hight
-        self.img =img
-
+        self.img = img
 
 
 class Player:
-    def __init__(self,images,buttons,xposition,yposition,width,hight,img):
+    def __init__(self, images, buttons, xposition, yposition, width, hight, img):
         self.imgs = images
         self.b = buttons
         self.x = xposition
@@ -35,4 +34,3 @@ class Player:
         self.a_q = False
         self.q_c = 0
         self.hp = 100
-
