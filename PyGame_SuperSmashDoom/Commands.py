@@ -1,7 +1,7 @@
 import pygame
-import Classes
 
-def Load_BackGround(screen,Player_1,Player_2):
+
+def Load_BackGround(screen, Player_1, Player_2):
     screen.blit(pygame.image.load('background.jpg'), (0, 0))
 
     for i in range(80):
@@ -13,7 +13,8 @@ def Load_BackGround(screen,Player_1,Player_2):
 
     pygame.display.flip()
 
-def keyPressedEvents(keyPressedEvents,Player):
+
+def keyPressedEvents(keyPressedEvents, Player):
 
     if keyPressedEvents[Player.b[0]]:
         Player.h_v -= 1
@@ -26,50 +27,58 @@ def keyPressedEvents(keyPressedEvents,Player):
     if keyPressedEvents[Player.b[0]] == 0 and keyPressedEvents[Player.b[1]] == 0 and Player.h_v != 0:
         Player.h_v = ReduceToZero(Player.h_v)
 
-    Player.h_v = MaxMin(Player.h_v,-15,15)
+    Player.h_v = MaxMin(Player.h_v, -15, 15)
 
     if keyPressedEvents[Player.b[2]] and Player.canjump == True:
         Player.jump = True
         Player.canjump = False
 
-    if keyPressedEvents[Player.b[3]] and Player.e == True:
+    if keyPressedEvents[Player.b[3]] and Player.e == True and Player.a_s == False and Player.a_q == False:
         Player.a_e = True
         Player.e = False
         Player.v_v = 0
 
     if keyPressedEvents[pygame.K_t]:
-        Player.x,Player.y = 700,400
+        Player.x, Player.y = 700, 400
 
-    if keyPressedEvents[Player.b[4]] and Player.q == True:
-        Player.q_charge +=1
-        if Player.q_charge == 15:
-            Player.q_charge = 0
-            Player.a_q = True
-            Player.q = False
+    if keyPressedEvents[Player.b[4]] and Player.s == True and Player.a_e == False and Player.a_q == False:
+        Player.s_charge += 1
+        if Player.s_charge == 15:
+            Player.s_charge = 0
+            Player.a_s = True
+            Player.s = False
     else:
         Player.q_charge = 0
 
-    if Player.a_q == True:
-        if Player.img == Player.imgs[1] and Player.q_d == 0:
-            Player.q_d = -1
-        if Player.img == Player.imgs[0] and Player.q_d == 0:
-            Player.q_d = 1
+    if Player.a_s == True:
+        if Player.img == Player.imgs[1] and Player.s_d == 0:
+            Player.s_d = -1
+        if Player.img == Player.imgs[0] and Player.s_d == 0:
+            Player.s_d = 1
 
         if Player.a_h_v == 0:
-            Player.a_h_v = 61*Player.q_d
-        elif Player.a_h_v == Player.q_d:
+            Player.a_h_v = 61*Player.s_d
+        elif Player.a_h_v == Player.s_d:
             Player.a_h_v = 0
-            Player.a_q = False
-            Player.q_d = 0
+            Player.a_s = False
+            Player.s_d = 0
         else:
-            Player.a_h_v -= 5*Player.q_d
+            Player.a_h_v -= 5*Player.s_d
 
     else:
-        if Player.q == False:
-            Player.q_c +=1
-        if Player.q_c == 20:
-            Player.q_c = 0
-            Player.q = True
+        if Player.s == False:
+            Player.s_c += 1
+        if Player.s_c == 20:
+            Player.s_c = 0
+            Player.s = True
+
+    if keyPressedEvents[Player.b[5]] and Player.q == True and Player.a_e == False and Player.a_s == False:
+        Player.a_q = True
+        Player.q = False
+        Player.v_v = 0
+
+    #if Player == True:
+        #if Player.a_h_v
 
     Player.x = Player.x + Player.h_v + Player.a_h_v
 
@@ -82,17 +91,20 @@ def MaxMin(n, minn, maxn):
     else:
         return n
 
+
 def ReduceToZero(n):
     if n > 0:
         return n-1
     if n < 0:
         return n+1
 
-def RoundNum(numtoround,num):
+
+def RoundNum(numtoround, num):
     if num-5 <= numtoround <= num+15:
         return num
     else:
         return numtoround
+
 
 def GroundHitbox(Player):
     if 732 > Player.y > 700-Player.h and 320-Player.w <= Player.x <= 1600:
@@ -103,10 +115,11 @@ def GroundHitbox(Player):
             if 320 <= Player.x+Player.h_v <= 360:
                 Player.x -= Player.h_v
 
-        Player.y = RoundNum(Player.y,600)
-        if Player.y == RoundNum(Player.y,600) and 320-Player.w <= Player.x <= 1600:
+        Player.y = RoundNum(Player.y, 600)
+        if Player.y == RoundNum(Player.y, 600) and 320-Player.w <= Player.x <= 1600:
             Player.v_v = 0
-        Player.y = RoundNum(Player.y,660)
+        Player.y = RoundNum(Player.y, 660)
+
 
 def Gravity(Player):
     if Player.y == 700-Player.h and 320-Player.w <= Player.x <= 1600:
@@ -141,13 +154,11 @@ def Gravity(Player):
             Player.e = True
             Player.e_c = 0
 
-    Player.v_v = MaxMin(Player.v_v,-100,15)
+    Player.v_v = MaxMin(Player.v_v, -100, 15)
     Player.y = Player.y + Player.v_v + Player.a_v_v
+
 
 def cleanpictures(imgs):
     WHITE = (255, 255, 255)
     for i in range(len(imgs)):
         imgs[i].set_colorkey(WHITE)
-
-
-

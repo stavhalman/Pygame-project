@@ -26,10 +26,13 @@ class Player:
         self.e = True
         self.a_e = False
         self.e_c = 0
+        self.s = True
+        self.a_s = False
+        self.s_c = 0
+        self.s_charge = 0
+        self.s_d = 0
         self.q = True
         self.a_q = False
         self.q_c = 0
-        self.q_charge = 0
-        self.q_d = 0
         self.hp = 100
 
