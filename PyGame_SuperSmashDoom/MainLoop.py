@@ -2,7 +2,7 @@ import pygame
 import Classes
 import Commands
 
-WINDOW_WIDTH = 1920
+WINDOW_WIDTH = 920
 WINDOW_HEIGHT = 1040
 pygame.init()
 size = (WINDOW_WIDTH, WINDOW_HEIGHT)

@@ -77,8 +77,27 @@ def keyPressedEvents(keyPressedEvents, Player):
         Player.q = False
         Player.v_v = 0
 
-    #if Player == True:
-        #if Player.a_h_v
+    if Player.a_q == True:
+        if Player.a_v_v == 0:
+            Player.a_v_v = -16
+        elif Player.a_v_v == -1:
+            Player.a_v_v = 1
+        elif 16 > Player.a_v_v > 0:
+            Player.a_v_v = Player.a_v_v*2
+        elif Player.a_v_v == 16:
+            if Player.y == 700-Player.h and 320-Player.w <= Player.x <= 1600:
+                Player.a_v_v = 0
+                Player.a_q = False
+        else:
+            Player.a_v_v = Player.a_v_v/2
+        if Player.a_v_v != 0:
+            if Player.img == Player.imgs[0]:
+                Player.a_h_v = 16
+            else:
+                Player.a_h_v = -16
+        else:
+            Player.a_h_v = 0
+            Player.q = True
 
     Player.x = Player.x + Player.h_v + Player.a_h_v
 
@@ -124,9 +143,8 @@ def GroundHitbox(Player):
 def Gravity(Player):
     if Player.y == 700-Player.h and 320-Player.w <= Player.x <= 1600:
         Player.v_v = 0
-        Player.a_v_v = 0
         Player.canjump = True
-    elif Player.jump == False and Player.a_e == False:
+    elif Player.jump == False and Player.a_e == False and Player.a_q == False:
         Player.v_v += 1
     MaxMin(Player.v_v, -15, 15)
 
