@@ -1,16 +1,42 @@
 import pygame
 
 
-def loadbackground(screen, player_1, player_2):
+def rungame(screen, player1, player2):
+    won = whowon(player1,player2)
+    if won == None:
+        loadbackground(screen, player1, player2)
+        keypressed = pygame.key.get_pressed()
+        keypressedevents(keypressed, player1)
+        keypressedevents(keypressed, player2)
+        gravity(player1)
+        gravity(player2)
+        groundhitbox(player1)
+        groundhitbox(player2)
+        damage(player1, player2)
+        damage(player2, player1)
+    else:
+        pygame.draw.rect(screen, (0, 0, 0), (200, 200, 100, 50))
+        font = pygame.font.SysFont(None, 50)
+        img = font.render(won, True, (255,0,0))
+        screen.blit(img, (200, 200))
+        pygame.display.flip()
+
+
+def loadbackground(screen, player1, player2):
     screen.blit(pygame.image.load('background.jpg'), (0, 0))
 
     for i in range(80):
         screen.blit(pygame.image.load('grass_block_side.png'), (16 * i + 320, 700))
         screen.blit(pygame.image.load('dirt.png'), (16 * i + 320, 716))
 
-    screen.blit(player_1.img, (player_1.x, player_1.y))
-    screen.blit(player_2.img, (player_2.x, player_2.y))
-
+    screen.blit(player1.img, (player1.x, player1.y))
+    screen.blit(player2.img, (player2.x, player2.y))
+    pygame.draw.rect(screen, (0, 0, 0), (0, 0, 210, 30))
+    pygame.draw.rect(screen, (255, 0, 0), (5, 5, 200, 20))
+    pygame.draw.rect(screen, (0, 225, 0), (5, 5, player1.hp*2, 20))
+    pygame.draw.rect(screen, (0, 0, 0), (1710, 0, 210, 30))
+    pygame.draw.rect(screen, (255, 0, 0), (1715, 5, 200, 20))
+    pygame.draw.rect(screen, (0, 225, 0), (1715, 5, player2.hp * 2, 20))
     pygame.display.flip()
 
 
@@ -38,7 +64,7 @@ def keypressedevents(keypressed, player):
         player.v_v = 0
 
     if keypressed[pygame.K_t]:
-        player.x, player.y = 700, 400
+        player.hp = 0
 
     if keypressed[player.b[4]] and player.s == True and player.a_e == False and player.a_q == False:
         player.s_charge += 1
@@ -47,22 +73,23 @@ def keypressedevents(keypressed, player):
             player.a_s = True
             player.s = False
     else:
-        player.q_charge = 0
+        player.s_charge = 0
 
     if player.a_s:
-        if player.img == player.imgs[1] and player.s_d == 0:
-            player.s_d = -1
-        if player.img == player.imgs[0] and player.s_d == 0:
-            player.s_d = 1
+        if player.img == player.imgs[1] and player.s_v == 0:
+            player.s_v = -1
+        if player.img == player.imgs[0] and player.s_v == 0:
+            player.s_v = 1
 
         if player.a_h_v == 0:
-            player.a_h_v = 61 * player.s_d
-        elif player.a_h_v == player.s_d:
+            player.a_h_v = 61 * player.s_v
+        elif player.a_h_v == player.s_v:
             player.a_h_v = 0
             player.a_s = False
-            player.s_d = 0
+            player.s_d = True
+            player.s_v = 0
         else:
-            player.a_h_v -= 5 * player.s_d
+            player.a_h_v -= 5 * player.s_v
 
     else:
         if not player.s:
@@ -87,6 +114,7 @@ def keypressedevents(keypressed, player):
             if player.y == 700 - player.h and 320 - player.w <= player.x <= 1600:
                 player.a_v_v = 0
                 player.a_q = False
+                player.q_d = True
         else:
             player.a_v_v = player.a_v_v / 2
         if player.a_v_v != 0:
@@ -165,11 +193,12 @@ def gravity(player):
         else:
             player.a_v_v = player.a_v_v / 2
 
-    if not player.e:
+    if not player.a_e:
         player.e_c += 1
         if player.e_c == 30:
             player.e = True
             player.e_c = 0
+            player.e_d = True
 
     player.v_v = maxmin(player.v_v, -100, 15)
     player.y = player.y + player.v_v + player.a_v_v
@@ -179,3 +208,55 @@ def cleanpictures(imgs):
     white = (255, 255, 255)
     for i in range(len(imgs)):
         imgs[i].set_colorkey(white)
+
+
+def damage(player1, player2):
+    if player1.a_e:
+        if player1.img == player1.imgs[1] and player1.x-100-player1.w <= player2.x <= player1.x and \
+                player1.y-100 <= player2.y <= player1.y+player1.h:
+            if player1.e_d:
+                player1.e_d = False
+                player2.hp -= 5
+        elif player1.img == player1.imgs[0] and player1.x <= player2.x <= player1.x+100+player1.w and \
+                player1.y-100 <= player2.y <= player1.y+player1.h:
+            if player1.e_d:
+                player1.e_d = False
+                player2.hp -= 5
+
+    if player1.q_d:
+        if player1.img == player1.imgs[1] and player1.x-100-player1.w <= player2.x <= player1.x:
+            player2.hp -= 5
+            player1.q_d = False
+        elif player1.img == player1.imgs[0] and player1.x+player1.w <= player2.x <= player1.x+100+player1.w:
+            player2.hp -= 5
+            player1.q_d = False
+
+    if player1.a_s:
+        if player1.img == player1.imgs[1] and player1.x-50-player1.w <= player2.x <= player1.x and \
+                player1.y-100 <= player2.y <= player1.y+player1.h:
+            if player1.s_d:
+                player1.s_d = False
+                player2.hp -= 5
+        elif player1.img == player1.imgs[0] and player1.x <= player2.x <= player1.x+50+player1.w and \
+                player1.y-100 <= player2.y <= player1.y+player1.h:
+            if player1.s_d:
+                player1.s_d = False
+                player2.hp -= 5
+    if player1.x > 1920-player1.w or player1.x < 0 or player1.y < -player1.h or player1.y > 1040:
+        if player1.o <=10:
+            player1.hp -= 1
+            player1.o += 1
+        else:
+            player1.x,player1.y,player1.o = 870,500,0
+
+def whowon(player1, player2):
+    if player1.hp <= 0:
+        if player2.hp <= 0:
+            return "Draw"
+        else:
+            return "Player 2 Won"
+    elif player2.hp <= 0:
+        return "Player 1 Won"
+    else:
+        return None
+
