@@ -11,11 +11,9 @@ pygame.display.set_caption("Game")
 clock = pygame.time.Clock()
 REFRESH_RATE = 60
 
-player1 = Classes.Player([pygame.image.load('Charecter.R.png').convert(), pygame.image.load('Charecter.L.png').convert()],
-                         [pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_e, pygame.K_s, pygame.K_q], 400, 600, 100, 100, 0)
+player1 = Classes.Player([pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_e, pygame.K_s, pygame.K_q], 400, 600, 100, 100, 0, pygame.image.load('player1.png'))
 Commands.cleanpictures(player1.imgs)
-player2 = Classes.Player([pygame.image.load('Charecter.R.png').convert(), pygame.image.load('Charecter.L.png').convert()],
-                         [pygame.K_h, pygame.K_k, pygame.K_u, pygame.K_i, pygame.K_j, pygame.K_y], 1400, 600, 100, 100, 1)
+player2 = Classes.Player([pygame.K_h, pygame.K_k, pygame.K_u, pygame.K_i, pygame.K_j, pygame.K_y], 1400, 600, 100, 100, 1, pygame.image.load('player2.png'))
 Commands.cleanpictures(player2.imgs)
 
 finish = False
