@@ -7,7 +7,6 @@ second = 22
 def rungame(screen, player1, player2):
     won = whowon(player1, player2)
     loadbackground(screen, player1, player2)
-    print(player1.q_c)
     if won is None:
         keypressed = pygame.key.get_pressed()
         keypressedevents(keypressed, player1)
@@ -247,9 +246,9 @@ def damage(player1, player2):
             player1.q_d = False
             player2.e_v_v -= 10
             if player1.img == player1.imgs[1]:
-                player2.e_h_v -= 20
+                player2.e_h_v -= 20*player2.kb
             else:
-                player2.e_h_v += 20
+                player2.e_h_v += 20*player2.kb
         else:
             player1.q_d = False
 
@@ -262,9 +261,9 @@ def damage(player1, player2):
                 player1.a_s = False
                 player2.hp -= 5
                 if player1.img == player1.imgs[1]:
-                    player2.e_h_v -= 20
+                    player2.e_h_v -= 20*player2.kb
                 else:
-                    player2.e_h_v += 20
+                    player2.e_h_v += 20*player2.kb
 
     if player1.x > 1920 or player1.x + player1.w < 0 or player1.y < -player1.h or player1.y > 1040:
         if player1.o <= 10:
@@ -273,6 +272,7 @@ def damage(player1, player2):
         else:
             Classes.Player.restartabillities(player1)
             player1.x, player1.y, player1.o = 870, 500, 0
+    player2.kb = maxmin((100 - player2.hp)/20, 1, 1.7)
 
 
 def whowon(player1, player2):

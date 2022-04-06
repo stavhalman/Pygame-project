@@ -45,6 +45,7 @@ class Player:
         self.q_d = False
         self.hp = 100
         self.o = 0
+        self.kb = 0
 
     def restartcharecter(self, x, y):
         self.v_v = 0
