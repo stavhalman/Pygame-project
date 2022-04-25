@@ -175,6 +175,7 @@ def keypressedevents(keypressed, player):
         if player.s_c == 5 * second:
             player.s_c = 0
             player.s = True
+            player.s_d = FalseS
 
     # "Q" ability, while checking no other ability is activated.
     if keypressed[player.b[5]] and player.q == True and player.a_e == False and player.a_s == False:
